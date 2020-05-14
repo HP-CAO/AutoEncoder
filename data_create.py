@@ -1,9 +1,9 @@
 '''
  # @ Author: Hongi
  # @ Create Time: 2020-05-14 14:17:14
- # @ Modified by: Your name
+ # @ Modified by: Hongi
  # @ Modified time: 2020-05-14 14:34:12
- # @ Description: Randomly creat Sin signal and constant fault signal
+ # @ Description: Randomly create Sin signal and constant value fault signal
  '''
 
 

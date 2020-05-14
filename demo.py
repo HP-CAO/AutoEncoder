@@ -1,9 +1,9 @@
 '''
  # @ Author: Hongi
  # @ Create Time: 2020-05-14 14:17:14
- # @ Modified by: Your name
+ # @ Modified by: Hongi
  # @ Modified time: 2020-05-14 14:26:58
- # @ Description: Demo for siganl reconstruction and visualization 
+ # @ Description: Demo for signal reconstruction and visualization 
  '''
 
 

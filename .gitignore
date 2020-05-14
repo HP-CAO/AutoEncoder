@@ -2,3 +2,7 @@ logs/
 .vscode/
 __pycache__/
 training_track/
+
+test.txt
+train.txt
+fault.txt
