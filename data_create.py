@@ -1,3 +1,12 @@
+'''
+ # @ Author: Hongi
+ # @ Create Time: 2020-05-14 14:17:14
+ # @ Modified by: Your name
+ # @ Modified time: 2020-05-14 14:34:12
+ # @ Description: Randomly creat Sin signal and constant fault signal
+ '''
+
+
 import math
 import numpy as np
 import os

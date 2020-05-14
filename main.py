@@ -1,3 +1,12 @@
+'''
+ # @ Author: Hongi
+ # @ Create Time: 2020-05-14 14:17:14
+ # @ Modified by: Your name
+ # @ Modified time: 2020-05-14 14:31:44
+ # @ Description: Model training and evaluation 
+ '''
+
+
 import tensorflow as tf
 import random
 import numpy as np

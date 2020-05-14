@@ -1,3 +1,12 @@
+'''
+ # @ Author: Hongi
+ # @ Create Time: 2020-05-14 14:17:14
+ # @ Modified by: Your name
+ # @ Modified time: 2020-05-14 14:26:58
+ # @ Description: Demo for siganl reconstruction and visualization 
+ '''
+
+
 import os
 import numpy as np
 import tensorflow as tf
@@ -50,6 +59,10 @@ if __name__ == "__main__":
     training_time_stamp = '20200508-100536'
     weights_path = f"./training_track/{training_time_stamp}/cp.ckpt"
     
+    assert os.path.exists(weights_path),\
+    "The trained model not founded"  
+
+
     model = AutoEncoder()
     model.load_weights(weights_path)
 
