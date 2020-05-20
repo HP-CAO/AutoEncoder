@@ -56,7 +56,7 @@ def data_pick(test_ds, fault_ds, n=2):
 if __name__ == "__main__":
     
 
-    training_time_stamp = '20200508-100536'
+    training_time_stamp = '20200507-134237'
     weights_path = f"./training_track/{training_time_stamp}/cp.ckpt"
     
     assert os.path.exists(weights_path),\
