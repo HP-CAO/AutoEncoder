@@ -89,6 +89,5 @@ if __name__ == "__main__":
         plt.plot(x, fault_predictions[i])
         plt.show()
 
-    
     print("Reconstruction Visualized on tensorboard")
     
