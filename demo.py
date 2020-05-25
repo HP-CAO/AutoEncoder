@@ -70,12 +70,13 @@ if __name__ == "__main__":
     
 
     training_time_stamp = '20200521-154639'
-    weights_path = f"./training_track/{training_time_stamp}/cp.ckpt"
+    weights_dir =  f"./training_track/{training_time_stamp}"
+        
+    assert os.path.exists(weights_dir),\
+    "The trained model not founded"  
+
+    weights_path = weights_dir +"/cp.ckpt"
     
-    # assert os.path.exists(weights_path),\
-    # "The trained model not founded"  
-
-
     model = AutoEncoder()
     model.load_weights(weights_path)
 
