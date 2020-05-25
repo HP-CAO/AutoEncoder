@@ -22,10 +22,10 @@ class AutoEncoder(Model):
     
     def __init__(self):
         super(AutoEncoder, self).__init__()
-        self.dense1 = Dense(25, activation=tf.nn.tanh, input_shape=(50,))
+        self.dense1 = Dense(25, activation=tf.nn.tanh, input_shape=(100,))
         self.dense2 = Dense(10, activation=tf.nn.tanh)
         self.dense3 = Dense(25, activation=tf.nn.tanh)
-        self.dense4 = Dense(50, activation=None)
+        self.dense4 = Dense(100, activation=None)
 
     def call(self, inputs):
         x = self.dense1(inputs) 
@@ -33,31 +33,38 @@ class AutoEncoder(Model):
         x = self.dense3(x)
         return self.dense4(x)
 
+def data_normalization(data_set):
+    
+    for i in range(len(data_set)):
+        data_set[i]=(data_set[i]-np.min(data_set[i]))/(np.max(data_set)-np.min(data_set[i]))
+    
+    return data_set
+
 def load_data():
 ## Data_dir checking  
     try:
-        os.path.exists('train.txt')
-        os.path.exists('test.txt')
-        os.path.exists('fault.txt')
+        os.path.exists('speed_train.txt')
+        os.path.exists('speed_test.txt')
+        os.path.exists('spike_fault.txt')
     except FileNotFoundError:
         print("Have you ever created train/tes/fault dataset?")
     
 ## Load training data 
-    train_data = np.loadtxt('train.txt')
+    train_data = data_normalization(np.loadtxt('speed_train.txt'))
     x_train = train_data
     y_train = train_data
     train_ds = tf.data.Dataset.from_tensor_slices(
         (x_train, y_train)).batch(64)
 
 ## load_ testing data
-    test_data = np.loadtxt('test.txt')
+    test_data = data_normalization(np.loadtxt('speed_test.txt'))
     x_test = test_data
     y_test = test_data
     test_ds = tf.data.Dataset.from_tensor_slices(
         (x_test, y_test)).batch(64)
 
 ## laod_fault data
-    fault_data = np.loadtxt('fault.txt')
+    fault_data = data_normalization(np.loadtxt('spike_fault.txt'))
     x_fault = fault_data
     y_fault = fault_data
     fault_ds = tf.data.Dataset.from_tensor_slices(
@@ -90,9 +97,9 @@ if __name__ == "__main__":
     
     ## Set up summary writers
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    train_log_dir = 'logs/gradient_tape/' + current_time + '/train'
-    test_log_dir = 'logs/gradient_tape/' + current_time + '/test'
-    fault_log_dir = 'logs/gradient_tape/' + current_time + '/fault'
+    train_log_dir = 'logs/gradient_tape/' + current_time + '/speed_train'
+    test_log_dir = 'logs/gradient_tape/' + current_time + '/speed_test'
+    fault_log_dir = 'logs/gradient_tape/' + current_time + '/spike_fault'
 
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
     test_summary_writer = tf.summary.create_file_writer(test_log_dir)
@@ -103,7 +110,7 @@ if __name__ == "__main__":
     #checkpoint_dir = os.path.dirname(checkpoint_path)
 
 
-    EPOCHS = 300
+    EPOCHS = 1000
     loss_object = losses.MeanSquaredError()  
     optimizer = optimizers.Adam()
 

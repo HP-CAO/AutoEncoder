@@ -10,65 +10,49 @@ import numpy as np
 
 
 
-def train_dataset():
+def create_dataset():
 
-    train_dataset=[] 
-    for i in range(8):
-        train_data = np.loadtxt("./vehiclespeed/{}.txt".format(i+1))
-        train_data = train_data[:,1]
+    dataset=[] 
+    for i in range(10):
+        
+        data = np.loadtxt("./vehiclespeed/{}.txt".format(i + 1))
+        data = data[:,1]
         j = 0
+
         while True:   
-            train_dataset.append(train_data[j: j + 50])
+            dataset.append(data[j: j + 100])
             j += 10
-            if j + 50 > len(train_data):
+            if j + 100 > len(data):
                 break
-    np.random.shuffle(np.array(train_dataset))       
     
-    return train_dataset
+    np.random.shuffle(dataset)
 
-def test_dataset():
+    ## Divide into train/test/fault dataset
+          
+    n = len(dataset)
+    train_dataset = dataset[0:round(0.7*n)].copy()
+    test_dataset = dataset[round(0.7*n): round(0.85*n)].copy()
+    fault_dataset = dataset[round(0.85*n): n].copy()
 
-    test_dataset=[]
-    test_data = np.loadtxt("./vehiclespeed/9.txt")
-    test_data = test_data[:,1] 
-    j = 0
+    return train_dataset, test_dataset, fault_dataset
 
-    while True:
-        test_dataset.append(test_data[j: j + 50])
-        j += 10
-        if j + 50 > len(test_data):
-            break
+
+
+def create_spike_fault():
     
-    np.random.shuffle(np.array(test_dataset))
+    ''' create spike point based on normal signal: x(t) = x(t) + vδ(t),  '''
+    ''' randomly pick one of the point from signal slice'''
+    ''' randomly set amplititude v --| x = x(t)*(1+v) where v[0,1] '''
     
-    return test_dataset
+    signal_set = np.loadtxt("./speed_fault.txt")
 
-def spike_fault():
-    
-    spike_fault=[]
-    fault_data = np.loadtxt("./vehiclespeed/10.txt")
-    fault_data = fault_data[:, 1]
-    j = 0
-
-    while True:
-        
-        signal_slice = fault_data[j: j + 50]
-        ''' create spike point based on normal signal: x(t) = x(t) + vδ(t),  '''
-        ''' randomly pick one of the point from signal slice'''
-        ''' randomly set amplititude v --| x = x(t)*(1+v) where v[0,1] '''
-
+    for i in range(len(signal_set)):
         v = np.random.random_sample()  ## create a random number [0, 1)
-        spike_index = np.random.choice(len(signal_slice))
-        signal_slice[spike_index] = signal_slice[spike_index] * (1 + v)     
-        spike_fault.append(signal_slice)
-        j += 10
-        
-        if j + 50 > len(fault_data):
-            break
-    
-    np.random.shuffle(np.array(spike_fault))
-    
-    return spike_fault
+        spike_index = np.random.choice(len(signal_set[i]))
+        signal_set[i][spike_index] = signal_set[i][spike_index] * (1 + v/4)
+
+    return signal_set
+
 
 def save_dataset(filename, dataset):
     """save dataset to .txt file"""
@@ -80,10 +64,11 @@ def save_dataset(filename, dataset):
 if __name__ == "__main__":
     
 
-    train_dataset = train_dataset()
-    test_dataset = test_dataset()
-    fault_dataset = spike_fault()
- 
-    save_dataset('speed_train', train_dataset)
-    save_dataset('speed_test',test_dataset)
-    save_dataset('speed_fault', fault_dataset)
+    train_dataset, test_dataset, fault_dataset = create_dataset()
+    save_dataset('speed_train.txt', train_dataset)
+    save_dataset('speed_test.txt',test_dataset)
+    save_dataset('speed_fault.txt', fault_dataset)
+
+    spike_fault = create_spike_fault()
+
+    save_dataset('spike_fault.txt', spike_fault)

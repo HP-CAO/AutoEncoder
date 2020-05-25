@@ -16,21 +16,29 @@ from matplotlib import pyplot as plt
 from main import AutoEncoder
 
 
+def data_normalization(data_set):
+    
+    for i in range(len(data_set)):
+        data_set[i]=(data_set[i]-np.min(data_set[i]))/(np.max(data_set)-np.min(data_set[i]))
+    
+    return data_set
+    
+
 def load_demo_data():
-    """load demo data from test.txt and fault.txt for test"""
+    """load demo data from speed_test.txt and spike_fault.txt for test"""
     ## Data_dir checking  
     try:
-        os.path.exists('train.txt')
-        os.path.exists('test.txt')
-        os.path.exists('fault.txt')
+        os.path.exists('speed_train.txt')
+        os.path.exists('speed_test.txt')
+        os.path.exists('spike_fault.txt')
     except FileNotFoundError:
         print("Have you ever created test/fault dataset?")
     
     ## load_ testing data
-    test_data = np.loadtxt('test.txt')
+    test_data = np.loadtxt('speed_test.txt')
     x_test = test_data
     ## laod_fault data
-    fault_data = np.loadtxt('fault.txt')
+    fault_data = np.loadtxt('spike_fault.txt')
     x_fault = fault_data
     
     print("----------Data loaded!----------")
@@ -49,6 +57,11 @@ def data_pick(test_ds, fault_ds, n=2):
     for i in fault_indexes:        
         fault_pieces.append(fault_ds[i])
     
+
+    ## data normalization
+    test_pieces = data_normalization(test_pieces)
+    fault_pieces = data_normalization(fault_pieces)
+
     #print(test_pieces)
     return test_pieces, fault_pieces
 
@@ -56,11 +69,11 @@ def data_pick(test_ds, fault_ds, n=2):
 if __name__ == "__main__":
     
 
-    training_time_stamp = '20200507-134237'
+    training_time_stamp = '20200521-154639'
     weights_path = f"./training_track/{training_time_stamp}/cp.ckpt"
     
-    assert os.path.exists(weights_path),\
-    "The trained model not founded"  
+    # assert os.path.exists(weights_path),\
+    # "The trained model not founded"  
 
 
     model = AutoEncoder()
@@ -68,7 +81,7 @@ if __name__ == "__main__":
 
     x_test, x_fault = load_demo_data()
     test_pieces, fault_pieces = data_pick(x_test, x_fault,5) ## Pick 5 samples from test_data and fault_data each
-    x=np.arange(50)
+    x=np.arange(100)
 
     test_pieces = np.array(test_pieces)
     fault_pieces = np.array(fault_pieces)
