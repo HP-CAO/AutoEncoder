@@ -3,7 +3,7 @@
  # @ Create Time: 2020-05-20 16:41:00
  # @ Modified by: Your name
  # @ Modified time: 2020-05-20 16:43:03
- # @ Description: Create vehiclespeed signal dataset
+ # @ Description: Creating vehiclespeed signal dataset (train/test/fault)
  '''
 
 import numpy as np
