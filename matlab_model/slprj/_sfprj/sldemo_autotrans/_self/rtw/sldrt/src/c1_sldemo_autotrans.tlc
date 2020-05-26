@@ -1,0 +1,86 @@
+%implements "chartSource" "C"
+%function ChartConfig(block, system) void
+  %createrecord chartConfiguration { ...
+          executeAtInitialization  0 ...
+  }
+  %return chartConfiguration
+%endfunction
+%function ChartDataMap(block, system) void
+  %createrecord ChartDataElements {\
+    NumChartData   9 \
+    ChartDataDefaults {\
+      RecordType   "ChartData"\
+      Dimensions   []\
+      IsTestPoint  0\
+    }\
+    ChartData {\
+      Name         "sfEvent"\
+      Description  "ActiveChartEvent"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "is_active_c1_sldemo_autotrans"\
+      Description  "StateIsActive"\
+      SFName       "is_active_c1_sldemo_autotrans"\
+      Path         "is_active_c1_sldemo_autotrans"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "is_gear_state"\
+      Description  "StateActiveChild"\
+      SFName       "is_gear_state"\
+      Path         "gear_state.is_gear_state"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "is_active_gear_state"\
+      Description  "StateIsActive"\
+      SFName       "is_active_gear_state"\
+      Path         "gear_state.is_active_gear_state"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "is_selection_state"\
+      Description  "StateActiveChild"\
+      SFName       "is_selection_state"\
+      Path         "selection_state.is_selection_state"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "is_active_selection_state"\
+      Description  "StateIsActive"\
+      SFName       "is_active_selection_state"\
+      Path         "selection_state.is_active_selection_state"\
+      SrcLocation  ""\
+      IsTestPoint  1\
+    }\
+    ChartData {\
+      Name         "down_th"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "down_th"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "up_th"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "up_th"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "temporalCounter_i1"\
+      Description  "TemporalCounter"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+  }
+  %return ChartDataElements
+%endfunction
