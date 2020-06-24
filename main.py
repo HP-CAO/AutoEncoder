@@ -13,25 +13,22 @@ import numpy as np
 import os
 import datetime
 
-from tensorflow.keras.layers import Dense, Flatten
-from tensorflow.keras import Model  
-from tensorflow.keras import losses
-from tensorflow.keras import optimizers
 
-class AutoEncoder(Model):
+class AutoEncoder(tf.keras.Model):
     
     def __init__(self):
         super(AutoEncoder, self).__init__()
-        self.dense1 = Dense(25, activation=tf.nn.tanh, input_shape=(100,))
-        self.dense2 = Dense(10, activation=tf.nn.tanh)
-        self.dense3 = Dense(25, activation=tf.nn.tanh)
-        self.dense4 = Dense(100, activation=None)
+        self.dense1 = tf.keras.layers.Dense(25, activation=tf.nn.tanh, input_shape=(100,))
+        self.dense2 = tf.keras.layers.Dense(10, activation=tf.nn.tanh)
+        self.dense3 = tf.keras.layers.Dense(25, activation=tf.nn.tanh)
+        self.dense4 = tf.keras.layers.Dense(100, activation=None)
 
     def call(self, inputs):
         x = self.dense1(inputs) 
         x = self.dense2(x)
         x = self.dense3(x)
         return self.dense4(x)
+
 
 def data_normalization(data_set):
     
@@ -92,7 +89,6 @@ def fault_test(signal, labels):
     f_loss = loss_object(labels, predictions)
     fault_loss(f_loss)
 
-
 if __name__ == "__main__":
     
     ## Set up summary writers
@@ -111,8 +107,8 @@ if __name__ == "__main__":
 
 
     EPOCHS = 1000
-    loss_object = losses.MeanSquaredError()  
-    optimizer = optimizers.Adam()
+    loss_object = tf.keras.losses.MeanSquaredError()  
+    optimizer = tf.keras.optimizers.Adam()
 
     model = AutoEncoder()
     train_ds, test_ds, fault_ds = load_data()

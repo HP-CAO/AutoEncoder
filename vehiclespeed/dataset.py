@@ -49,7 +49,7 @@ def create_spike_fault():
     for i in range(len(signal_set)):
         v = np.random.random_sample()  ## create a random number [0, 1)
         spike_index = np.random.choice(len(signal_set[i]))
-        signal_set[i][spike_index] = signal_set[i][spike_index] * (1 + v/4)
+        signal_set[i][spike_index] = signal_set[i][spike_index] * (1 + v/5)
 
     return signal_set
 
@@ -70,5 +70,4 @@ if __name__ == "__main__":
     save_dataset('speed_fault.txt', fault_dataset)
 
     spike_fault = create_spike_fault()
-
     save_dataset('spike_fault.txt', spike_fault)
