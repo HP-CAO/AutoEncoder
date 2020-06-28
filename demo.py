@@ -17,14 +17,16 @@ from main import AutoEncoder
 
 
 def data_normalization(data_set):
+    """Do gloabal normalization for data"""
+    # (xi-Xmin)/(Xmax-min)
     
-    for i in range(len(data_set)):
-        data_set[i]=(data_set[i]-np.min(data_set[i]))/(np.max(data_set)-np.min(data_set[i]))
-    
-    return data_set
-    
+    data_set = (data_set-np.min(data_set))/(np.max(data_set)-np.min(data_set))
 
+    return data_set
+
+    
 def load_demo_data():
+
     """load demo data from speed_test.txt and spike_fault.txt for test"""
     ## Data_dir checking  
     try:
@@ -57,7 +59,6 @@ def data_pick(test_ds, fault_ds, n=2):
     for i in fault_indexes:        
         fault_pieces.append(fault_ds[i])
     
-
     ## data normalization
     test_pieces = data_normalization(test_pieces)
     fault_pieces = data_normalization(fault_pieces)
@@ -69,7 +70,7 @@ def data_pick(test_ds, fault_ds, n=2):
 if __name__ == "__main__":
     
 
-    training_time_stamp = '20200521-154639'
+    training_time_stamp = '20200624-192943'
     weights_dir =  f"./training_track/{training_time_stamp}"
         
     assert os.path.exists(weights_dir),\
@@ -103,5 +104,4 @@ if __name__ == "__main__":
         plt.plot(x, fault_predictions[i])
         plt.show()
 
-    print("Reconstruction Visualized on tensorboard")
     

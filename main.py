@@ -18,9 +18,9 @@ class AutoEncoder(tf.keras.Model):
     
     def __init__(self):
         super(AutoEncoder, self).__init__()
-        self.dense1 = tf.keras.layers.Dense(25, activation=tf.nn.tanh, input_shape=(100,))
-        self.dense2 = tf.keras.layers.Dense(10, activation=tf.nn.tanh)
-        self.dense3 = tf.keras.layers.Dense(25, activation=tf.nn.tanh)
+        self.dense1 = tf.keras.layers.Dense(75, activation='relu', input_shape=(100,))
+        self.dense2 = tf.keras.layers.Dense(50, activation='relu')
+        self.dense3 = tf.keras.layers.Dense(75, activation='relu')
         self.dense4 = tf.keras.layers.Dense(100, activation=None)
 
     def call(self, inputs):
@@ -29,12 +29,12 @@ class AutoEncoder(tf.keras.Model):
         x = self.dense3(x)
         return self.dense4(x)
 
-
 def data_normalization(data_set):
-    
-    for i in range(len(data_set)):
-        data_set[i]=(data_set[i]-np.min(data_set[i]))/(np.max(data_set)-np.min(data_set[i]))
-    
+    """Do gloabal normalization for data"""
+    # (xi-Xmin)/(Xmax-min)
+
+    data_set = (data_set-np.min(data_set))/(np.max(data_set)-np.min(data_set))
+
     return data_set
 
 def load_data():
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     #checkpoint_dir = os.path.dirname(checkpoint_path)
 
 
-    EPOCHS = 1000
+    EPOCHS = 500
     loss_object = tf.keras.losses.MeanSquaredError()  
     optimizer = tf.keras.optimizers.Adam()
 
@@ -123,6 +123,7 @@ if __name__ == "__main__":
 
         train_loss.reset_states()
         test_loss.reset_states()
+        fault_loss.reset_states()
 
         for signals, labels in train_ds:
             train(signals, labels)
