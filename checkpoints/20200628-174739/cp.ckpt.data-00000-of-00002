@@ -1,0 +1,43 @@
+ö®Ò²i
+0
+
+dense1
+
+dense2
+
+dense3
+
+dense4
+
+
+kernel
+bias
+
+
+kernel
+bias
+
+
+	kernel
+
+bias
+
+
+kernel
+bias
+[Y
+VARIABLE_VALUEmlp_auto_encoder/dense/kernel(dense1/kernel/.ATTRIBUTES/VARIABLE_VALUE
+WU
+VARIABLE_VALUEmlp_auto_encoder/dense/bias&dense1/bias/.ATTRIBUTES/VARIABLE_VALUE
+][
+VARIABLE_VALUEmlp_auto_encoder/dense_1/kernel(dense2/kernel/.ATTRIBUTES/VARIABLE_VALUE
+YW
+VARIABLE_VALUEmlp_auto_encoder/dense_1/bias&dense2/bias/.ATTRIBUTES/VARIABLE_VALUE
+][
+VARIABLE_VALUEmlp_auto_encoder/dense_2/kernel(dense3/kernel/.ATTRIBUTES/VARIABLE_VALUE
+YW
+VARIABLE_VALUEmlp_auto_encoder/dense_2/bias&dense3/bias/.ATTRIBUTES/VARIABLE_VALUE
+][
+VARIABLE_VALUEmlp_auto_encoder/dense_3/kernel(dense4/kernel/.ATTRIBUTES/VARIABLE_VALUE
+YW
+VARIABLE_VALUEmlp_auto_encoder/dense_3/bias&dense4/bias/.ATTRIBUTES/VARIABLE_VALUE

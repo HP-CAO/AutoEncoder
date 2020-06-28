@@ -12,59 +12,7 @@ import numpy as np
 import tensorflow as tf
 import datetime 
 from matplotlib import pyplot as plt
-
-from main import AutoEncoder
-
-
-def data_normalization(data_set):
-    """Do gloabal normalization for data"""
-    # (xi-Xmin)/(Xmax-min)
-    
-    data_set = (data_set-np.min(data_set))/(np.max(data_set)-np.min(data_set))
-
-    return data_set
-
-    
-def load_demo_data():
-
-    """load demo data from speed_test.txt and spike_fault.txt for test"""
-    ## Data_dir checking  
-    try:
-        os.path.exists('speed_train.txt')
-        os.path.exists('speed_test.txt')
-        os.path.exists('spike_fault.txt')
-    except FileNotFoundError:
-        print("Have you ever created test/fault dataset?")
-    
-    ## load_ testing data
-    test_data = np.loadtxt('speed_test.txt')
-    x_test = test_data
-    ## laod_fault data
-    fault_data = np.loadtxt('spike_fault.txt')
-    x_fault = fault_data
-    
-    print("----------Data loaded!----------")
-    return x_test, x_fault
-
-def data_pick(test_ds, fault_ds, n=2):
-    """Randomly pick several pieces of data for demo test"""
-    
-    test_indexes = np.random.choice(len(test_ds), n)
-    test_pieces = []
-    for i in test_indexes:
-        test_pieces.append(test_ds[i])
-    
-    fault_indexes = np.random.choice(len(fault_ds), n)
-    fault_pieces = []
-    for i in fault_indexes:        
-        fault_pieces.append(fault_ds[i])
-    
-    ## data normalization
-    test_pieces = data_normalization(test_pieces)
-    fault_pieces = data_normalization(fault_pieces)
-
-    #print(test_pieces)
-    return test_pieces, fault_pieces
+from autoencoder import config as cfg
 
 
 if __name__ == "__main__":
@@ -82,7 +30,7 @@ if __name__ == "__main__":
     model.load_weights(weights_path)
 
     x_test, x_fault = load_demo_data()
-    test_pieces, fault_pieces = data_pick(x_test, x_fault,5) ## Pick 5 samples from test_data and fault_data each
+    test_pieces, fault_pieces = data_pick(x_test, x_fault) ## Pick 5 samples from test_data and fault_data each
     x=np.arange(100)
 
     test_pieces = np.array(test_pieces)
