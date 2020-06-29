@@ -28,6 +28,13 @@ def create_dataset():
     ## Divide into train/test/fault dataset
           
     n = len(dataset)
+    max=np.max(dataset)
+    min=np.min(dataset)
+
+    print(max)
+    print("-----")
+    print(min)
+    
     train_dataset = dataset[0:round(0.85*n)].copy()
     test_dataset = dataset[round(0.85*n): n].copy()
 

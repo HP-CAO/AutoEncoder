@@ -9,8 +9,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-
-from main import AutoEncoder
+from autoencoder.net import MLPAutoEncoder
 from matplotlib import pyplot as plt
 
 def data_normalization(data_set):
@@ -29,7 +28,7 @@ if __name__ == "__main__":
     weights_path = weights_dir +"/cp.ckpt"
 
 
-    model = AutoEncoder()
+    model = MLPAutoEncoder()
     model.load_weights(weights_path)
 
     test_data = np.array(np.loadtxt('speed_test.txt'))

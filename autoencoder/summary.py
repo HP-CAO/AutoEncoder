@@ -14,7 +14,7 @@ import datetime
 
 def build_summary_writer(current_time):
 
-    ## Set up summary writers
+    # Set up summary writers
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     train_log_dir = 'logs/gradient_tape/' + current_time + '/speed_train'
     test_log_dir = 'logs/gradient_tape/' + current_time + '/speed_test'

@@ -5,19 +5,29 @@
  # @ Modified time: 2020-06-28 14:04:44
  # @ Description: Data prepration/preprocessing
  '''
-from autoencoder import config as cfg
+import autoencoder.config as cfg
 import os
 import numpy as np
 import tensorflow as tf
 
+
+
+def compute_norm_factors():
+    dataset= np.loadtxt(cfg.TRAIN_DATASET_PATH, dtype=float)
+    max = np.max(dataset)
+    min = np.min(dataset)
+    return print('max for train dataset:{}, --- min for train dataset: {}'.format(max, min))
+
 def data_normalization(dataset):
     """Do gloabal normalization for data"""
-    # (xi-Xmin)/(Xmax-min)
-    dataset = (dataset-np.min(dataset))/(np.max(dataset)-np.min(dataset))
+    # (xi-Xmin)/(Xmax-min) 
+
+    dataset = (dataset-cfg.DATA_NORMALIZATION_MIN)/(cfg.DATA_NORMALIZATION_MAX-cfg.DATA_NORMALIZATION_MIN)
     return dataset
 
 def load_data(data_path):
-    ## Data_dir checking  
+    # load data for batch training/batch testing
+    # Data_dir checking  
     try:
         os.path.exists(data_path)
     except FileNotFoundError:
@@ -33,23 +43,17 @@ def load_data(data_path):
     return dataset
 
 
-def data_pick(test_ds, fault_ds):
-    """Randomly pick several pieces of data for demo test"""
-    
-    test_indexes = np.random.choice(len(test_ds), cfg.TEST_SAMPLE_NUM)
+def data_pick(test_ds, fault_ds, n):
+    """Randomly pick several pieces of data for demo test """
+
+    indexes = np.random.choice(len(test_ds), n)
     test_pieces = []
-    for i in test_indexes:
-        test_pieces.append(test_ds[i])
-    
-
-    fault_indexes = np.random.choice(len(fault_ds), cfg.TEST_SAMPLE_NUM)
     fault_pieces = []
-    for i in fault_indexes:        
-        fault_pieces.append(fault_ds[i])
-    
-    ## data normalization
-    test_pieces = data_normalization(test_pieces)
-    fault_pieces = data_normalization(fault_pieces)
 
-    #print(test_pieces)
+    for i in indexes:
+        test_pieces.append(test_ds[i])
+        fault_pieces.append(fault_ds[i])
+
     return test_pieces, fault_pieces
+
+

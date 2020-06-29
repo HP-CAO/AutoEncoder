@@ -1,7 +1,7 @@
 logs/
 .vscode/
 __pycache__/
-training_track/
+checkpoints/
 
 test.txt
 train.txt
