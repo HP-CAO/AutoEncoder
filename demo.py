@@ -59,7 +59,7 @@ if __name__ == "__main__":
         # subplot_2 for abnormal test cases
         plt.subplot(3, 1 ,2)
         plt.plot(x, fault_pieces[i], label='Abnormal signal')
-        plt.plot(x, fault_predictions[i], label='Reconstructed normal signal')
+        plt.plot(x, fault_predictions[i], label='Reconstructed abnormal signal')
         plt.legend(loc='upper right')
         plt.ylabel('magnitude:x(t)')
         plt.title('Abnormal signal')
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         # subplot_3 for comparation between normal/abnormal reconstruction
         plt.subplot(3, 1 ,3)
         plt.plot(x, test_predictions[i], label='Normal signal constructed')
-        plt.plot(x, fault_predictions[i], label='Anormal signal constructed')
+        plt.plot(x, fault_predictions[i], label='Abnormal signal constructed')
         plt.legend(loc='upper right')
         plt.xlabel('time:t')
         plt.title('Reconstruction Comparation')
