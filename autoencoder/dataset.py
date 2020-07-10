@@ -21,12 +21,17 @@ def compute_norm_factors():
 def data_normalization(dataset):
     """Do gloabal normalization for data"""
     # (xi-Xmin)/(Xmax-min) 
-
     dataset = (dataset-cfg.DATA_NORMALIZATION_MIN)/(cfg.DATA_NORMALIZATION_MAX-cfg.DATA_NORMALIZATION_MIN)
     return dataset
 
+def add_noise(dataset):
+    """"Adding gaussain noise to be more realistic"""
+    noise = np.random.normal(cfg.DATA_NOISE_MEAN, cfg.DATA_NOISE_DEVIATION, cfg.DATA_INPUT_DIMENSION)
+    dataset = np.add(dataset, noise)
+    return dataset
+
 def load_data(data_path):
-    # load data for batch training/batch testing
+    # load data for batch training/batch testing during training phrase
     # Data_dir checking  
     try:
         os.path.exists(data_path)
@@ -35,6 +40,10 @@ def load_data(data_path):
     
     ## Load data and normalization
     data = data_normalization(np.loadtxt(data_path))
+    
+    if cfg.DATA_ADD_NOISE:
+        data = add_noise(data)
+        
     x_data = data
     y_data = data
     dataset = tf.data.Dataset.from_tensor_slices((x_data, y_data)).batch(cfg.TRAIN_BATCH_SIZE)

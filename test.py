@@ -31,6 +31,11 @@ if __name__ == "__main__":
     x_test = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))
     x_fault = dataset.data_normalization(np.loadtxt(cfg.TEST_FAULT_DATASET_PATH))
 
+
+    if cfg.DATA_ADD_NOISE:
+        x_test = dataset.add_noise(x_test)
+        x_fault = dataset.add_noise(x_fault)
+
     # Convert to np.array for batch test
     test_pieces = np.array(x_test)
     fault_pieces = np.array(x_fault)
@@ -82,9 +87,13 @@ if __name__ == "__main__":
         if num_covered_nodes_normal[s] > num_covered_nodes_fault[s]:
             k += 1
     
-    sensor_novelty_threshold_accuracy = i / test_num
+    sensor_novelty_detection_accuracy = i / test_num
     sensor_novelty_error_accuracy = j / test_num
     sensor_novelty_coverage_accuracy = k / test_num
+    
+    print(sensor_novelty_detection_accuracy)
+    print(sensor_novelty_error_accuracy)
+    print(sensor_novelty_coverage_accuracy)
     
     # To compute accuracy for detection
     # Range of reconstruction error
@@ -172,5 +181,7 @@ if __name__ == "__main__":
     plt.xlabel('Threshold(coverage rate based)')
     plt.ylabel('Accuracy')
     plt.legend(loc='upper right')
+
+    # Visualize detection accurracy in dual sensors architecture
     plt.show()
 

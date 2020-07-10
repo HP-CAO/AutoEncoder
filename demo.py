@@ -36,6 +36,11 @@ if __name__ == "__main__":
     # Randomly sample from dataset
     test_pieces, fault_pieces = dataset.data_pick(x_test, x_fault, cfg.TEST_SAMPLE_NUM)
     
+    # Add gaussain noise
+    if cfg.DATA_ADD_NOISE:
+        test_pieces = dataset.add_noise(test_pieces)
+        fault_pieces = dataset.add_noise(fault_pieces)
+
     # Convert to np.array for batch test
     test_pieces = np.array(test_pieces)
     fault_pieces = np.array(fault_pieces)
