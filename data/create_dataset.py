@@ -51,7 +51,7 @@ def create_spike_fault():
     for i in range(len(signal_set)):
         v = np.random.random_sample()  ## create a random number [0, 1)
         spike_index = np.random.choice(len(signal_set[i]))
-        signal_set[i][spike_index] = signal_set[i][spike_index] * (1 + v/5)
+        signal_set[i][spike_index] = signal_set[i][spike_index] * (1 + v/5 + 0.1) # we assume the minimum height ratio of spike fault is 0.1
 
     return signal_set
 

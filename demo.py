@@ -41,10 +41,6 @@ if __name__ == "__main__":
         test_pieces = dataset.add_noise(test_pieces)
         fault_pieces = dataset.add_noise(fault_pieces)
 
-    # Convert to np.array for batch test
-    test_pieces = np.array(test_pieces)
-    fault_pieces = np.array(fault_pieces)
-
     # Do inference
     test_predictions = model.predict(test_pieces)
     fault_predictions = model.predict(fault_pieces)
@@ -58,14 +54,14 @@ if __name__ == "__main__":
         plt.subplot(3, 1 ,1)
         plt.plot(x, test_pieces[i], label='Normal signal')
         plt.plot(x, test_predictions[i], label='Reconstructed normal signal')
-        plt.legend(loc='upper right')
+        plt.legend(loc='lower right')
         plt.title('Normal signal')
 
         # subplot_2 for abnormal test cases
         plt.subplot(3, 1 ,2)
         plt.plot(x, fault_pieces[i], label='Abnormal signal')
         plt.plot(x, fault_predictions[i], label='Reconstructed abnormal signal')
-        plt.legend(loc='upper right')
+        plt.legend(loc='lower right')
         plt.ylabel('magnitude:x(t)')
         plt.title('Abnormal signal')
 
@@ -73,7 +69,7 @@ if __name__ == "__main__":
         plt.subplot(3, 1 ,3)
         plt.plot(x, test_predictions[i], label='Normal signal constructed')
         plt.plot(x, fault_predictions[i], label='Abnormal signal constructed')
-        plt.legend(loc='upper right')
+        plt.legend(loc='lower right')
         plt.xlabel('time:t')
         plt.title('Reconstruction Comparation')
 

@@ -81,10 +81,10 @@ if __name__ == "__main__":
         if test_error[s] < cfg.TEST_THRESHOLD and fault_error[s] > cfg.TEST_THRESHOLD:
             i += 1
         
-        if test_error[s] <= fault_error[s]:
+        if test_error[s] < fault_error[s]:
             j += 1
         
-        if num_covered_nodes_normal[s] > num_covered_nodes_fault[s]:
+        if num_covered_nodes_normal[s] >= num_covered_nodes_fault[s]:
             k += 1
     
     sensor_novelty_detection_accuracy = i / test_num
@@ -152,16 +152,26 @@ if __name__ == "__main__":
         
     # Visualization
     # Visualizing reconstruction error for each test_cases(normal vs. abnormal)
-    plt.subplot(3, 1, 1)
-    x = np.arange(len(x_test))
-    plt.plot(x, test_error, 'b', label='Error for normal signals')
-    plt.plot(x, fault_error, 'r', label='Error for abnormal signals')
-    plt.xlabel('Samples')
-    plt.ylabel(' Mean Squared Error')
-    plt.legend(loc='upper right')
+  
+    # plt.subplot(2, 1, 1)
+    # x = np.arange(len(x_test))
+    # plt.plot(x, test_error, 'b', label='Error for normal signals')
+    # plt.plot(x, fault_error, 'r', label='Error for abnormal signals')
+    # plt.xlabel('Samples')
+    # plt.ylabel(' Mean Squared Error')
+    # plt.legend(loc='upper right')
+
+    # # Visualizing coverage rate for each test_cases(normal vs. abnormal)
+    # plt.subplot(2, 1, 2)
+    # plt.plot(x, num_covered_nodes_normal, 'b', label='Coverage rate for normal signals')
+    # plt.plot(x, num_covered_nodes_fault, 'r', label='Coverage rate for abnormal signals')
+    # plt.xlabel('Samples')
+    # plt.ylabel('Coverage rate')
+    # plt.legend(loc='upper right')
+
 
     # Visualizing detection accuracy
-    plt.subplot(3 ,1 ,2)
+    plt.subplot(2 ,1 ,1)
     t = threshold
     plt.plot(t, normal_test_accuracy,'g', label='Accuracy for normal test cases')
     plt.plot(t, abnormal_test_accuracy, 'c', label='Accuracy for abnormal test cases')
@@ -172,7 +182,7 @@ if __name__ == "__main__":
     plt.legend(loc='upper right')
 
     # Visualizing detection accuracy based on coverage
-    plt.subplot(3 ,1 ,3)
+    plt.subplot(2 ,1 ,2)
     c = np.arange(100)
     plt.plot(c, normal_test_coverage_accuracy, 'g', label='Accuracy for normal test cases')
     plt.plot(c, abnormal_test_coverage_accuracy, 'c', label='Accuracy for abnormal test cases')
@@ -180,7 +190,7 @@ if __name__ == "__main__":
     plt.plot(coverage_threshold_performance[0], max_total_test_coverage_accuracy, 'p', label='Accuracy:{:.2%}--Threshold:{}'.format(max_total_test_coverage_accuracy, coverage_threshold_performance[0]))
     plt.xlabel('Threshold(coverage rate based)')
     plt.ylabel('Accuracy')
-    plt.legend(loc='upper right')
+    plt.legend(loc='lower right')
 
     # Visualize detection accurracy in dual sensors architecture
     plt.show()

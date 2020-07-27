@@ -22,8 +22,11 @@ if __name__ == "__main__":
     # build model    
     model = MLPAutoEncoder()
     
-    # Sample a single signal for experiments
-    sample = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))[5]
+    # sample a single signal for experiments
+    sample = dataset.data_normalization(np.loadtxt(cfg.TEST_FAULT_DATASET_PATH))[0]
+    
+    # add noise
+    sample = dataset.add_noise(sample)
 
     # load pretraind weights
     weights_dir =  f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
@@ -42,15 +45,15 @@ if __name__ == "__main__":
     optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
     
     error = []
-    episodes = range(100)
+    episodes = range(500)
 
     for i in episodes:
         
         with tf.GradientTape() as tape:
-            tape.watch(signal)
+            #tape.watch(signal)
             predictions = model(signal)
             optimize_error = optimize_object_fun(signal, predictions)
-            gradients = tape.gradient(-optimize_error, signal)
+            gradients = tape.gradient(optimize_error, signal)
             optimizer.apply_gradients(zip([gradients], [signal]))
             error.append(optimize_error)
 
@@ -64,10 +67,15 @@ if __name__ == "__main__":
     plt.subplot(2, 1, 1)
     plt.plot(x, sample, label='Origianl signal')
     plt.plot(x, signal_update, label='New signal')
+    plt.xlabel('t')
+    plt.ylabel('x(t)')
     plt.legend(loc='upper right')
+
 
     plt.subplot(2, 1, 2)
     plt.plot(episodes, error)
+    plt.xlabel('Searching iterations')
+    plt.ylabel('Reconstruction Error')
     plt.show()
 
 

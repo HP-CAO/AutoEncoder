@@ -26,6 +26,7 @@ def data_normalization(dataset):
 
 def add_noise(dataset):
     """"Adding gaussain noise to be more realistic"""
+    np.random.seed(2)
     noise = np.random.normal(cfg.DATA_NOISE_MEAN, cfg.DATA_NOISE_DEVIATION, cfg.DATA_INPUT_DIMENSION)
     dataset = np.add(dataset, noise)
     return dataset
