@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     # define object function and optimizer
     optimize_object_fun = tf.keras.losses.MeanSquaredError()
-    optmizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+    optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
 
     episodes = range(500)
     counters = []

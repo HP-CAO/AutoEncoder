@@ -3,7 +3,7 @@
  # @ Create Time: 2020-07-20 13:17:53
  # @ Modified by: Your name
  # @ Modified time: 2020-07-20 13:18:04
- # @ Description: Searching for  counter examples little by little.
+ # @ Description: Searching for counter examples little by little.
  '''
 
 import os 
