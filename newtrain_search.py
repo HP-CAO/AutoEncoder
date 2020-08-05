@@ -106,10 +106,14 @@ def search():
 
             # Training spike phase
 
-            with tf.GradientTape() as tape:
+            with tf.GradientTape(watch_accessed_variables=False) as tape:
+                tape.watch(spike_height)
+                
                 error = error_model(fault_gen_model([signal_base, i, cfg.DATA_SPIKE_FAULT_MIN_VALUE]))
                 print("While training", error, spike_height)
+                print([var.name for var in tape.watched_variables()])
                 #grads = tape.gradient(error, error_model.trainable_variables)
+                
                 grads = tape.gradient(error, spike_height)
                 optimizer.apply_gradients(zip([grads], [spike_height]))
 
@@ -145,12 +149,8 @@ if __name__ == "__main__":
     index_selection = tf.one_hot(index_input, input_length, on_value=spike_value)
 
     fault_signal = tf.add(signal_in, index_selection)
-
+    
     fault_gen_model = tf.keras.Model(inputs=[signal_in, index_input, min_spike_height_input], outputs=fault_signal)
-
-    # auto_encoder = MLPAutoEncoder()
-    # error_model = auto_encoder.error_model()
-        
 
     # define the optimizer
     optimizer = tf.keras.optimizers.Adam()
