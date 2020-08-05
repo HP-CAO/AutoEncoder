@@ -44,10 +44,13 @@ def load_data(data_path):
     
     if cfg.DATA_ADD_NOISE:
         data = add_noise(data)
-        
+
+    data = tf.cast(data, tf.float32)
+
     x_data = data
     y_data = data
     dataset = tf.data.Dataset.from_tensor_slices((x_data, y_data)).batch(cfg.TRAIN_BATCH_SIZE)
+    
 
     print("----------Data loaded!----------")
     return dataset

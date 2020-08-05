@@ -8,8 +8,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-
-
 x = np.arange(100)
 counters_dir = "59counter_examples.txt"
 signalbase_dir = "59signal_base.txt"

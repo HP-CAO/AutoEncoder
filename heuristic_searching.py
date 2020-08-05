@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
             # Training spike phase
 
-            with tf.GradientTape as tape:
+            with tf.GradientTape() as tape:
                 error = error_model(fault_gen_model([signal_base, i, cfg.DATA_SPIKE_FAULT_MIN_VALUE]))
                 print("While training", error)
 
