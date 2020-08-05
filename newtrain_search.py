@@ -3,7 +3,7 @@
  # @ Create Time: 2020-08-04 10:20:57
  # @ Modified by: Your name
  # @ Modified time: 2020-08-04 10:21:26
- # @ Description: Heuristicly searching for counter examples in a smarter way
+ # @ Description: Training and heuristicly searching for counter examples in a smarter way
  '''
 
 import os
@@ -78,6 +78,7 @@ def train():
     error_model.save_weights(checkpoint_path)
     print('Training finished, model saved to {}'.format(checkpoint_path))            
 
+
 def search():
 
     steps = range(10)
@@ -108,6 +109,7 @@ def search():
             with tf.GradientTape() as tape:
                 error = error_model(fault_gen_model([signal_base, i, cfg.DATA_SPIKE_FAULT_MIN_VALUE]))
                 print("While training", error, spike_height)
+                #grads = tape.gradient(error, error_model.trainable_variables)
                 grads = tape.gradient(error, spike_height)
                 optimizer.apply_gradients(zip([grads], [spike_height]))
 
@@ -154,7 +156,7 @@ if __name__ == "__main__":
     optimizer = tf.keras.optimizers.Adam()
     
     # time stamp
-    current_time = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     
     # checkpoint_path
     checkpoint_path = './checkpoints/'+ current_time + '/cp.ckpt'
