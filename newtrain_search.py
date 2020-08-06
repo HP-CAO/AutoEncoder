@@ -26,9 +26,9 @@ class SpikeLayer(tf.keras.layers.Layer):
 
     def call(self, inputs, **kwargs):
         spike_value = self.spike_height + tf.sign(self.spike_height) * inputs[1]
-        index_selection = tf.one_hot(inputs[2], input_length, on_value=spike_value, dtype=tf.float32)
+        index_selection = tf.multiply(spike_value, tf.one_hot(inputs[2], input_length, dtype=tf.float32))
 
-        return inputs[0] + tf.multiply(tf.cast(tf.logical_not(inputs[3]), dtype=tf.float32), index_selection)
+        return inputs[0] + tf.multiply(tf.cast(inputs[3], dtype=tf.float32), index_selection)
 
 
 def train():
