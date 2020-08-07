@@ -93,7 +93,7 @@ def search():
     # samle a single signal for experiments 
     sample_index = np.random.randint(0, 300)
     sample = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))[sample_index]
-    sample - dataset.add_noise(sample)
+    sample = dataset.add_noise(sample)
     sample = tf.cast(sample, dtype=tf.float32)
     sample = tf.reshape(sample, (1, 100))
 
