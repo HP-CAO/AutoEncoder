@@ -27,7 +27,7 @@ def hard_search(sample):
         for j in range(1000):
             
             signal = np.copy(sample)
-            signal[i] = signal[i] * (cfg.DATA_SPIKE_FAULT_MIN_HEIGHT_RATIO + 0.009 * j) # searching rate =0.009
+            signal[i] = signal[i] + cfg.DATA_SPIKE_FAULT_MIN_VALUE * (1 + 0.009 * j) # searching rate =0.009
             spike_faults.append(signal)
 
         spike_faults = np.array(spike_faults)
@@ -38,7 +38,7 @@ def hard_search(sample):
             error_list.append(error)
 
         if error_list[0] == np.min(error_list):
-            print('[Safe]: At {} th time step, No counter examples found'.format(i + 1))    
+            print('[Safe]: Searching {} th sample, at {} th time step, No counter examples found'.format(sample_index, i + 1))    
         else:
             index = np.where(error_list < error_list[0])
             counter_examples = [spike_faults [n] for n in index]
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         sample_index += 1
         
     
-    print("Searching compelted")
+    print("Searching completed")
 
 
        

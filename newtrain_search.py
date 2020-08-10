@@ -7,6 +7,8 @@
  '''
 
 import os
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
 import tensorflow as tf
 import datetime
 import numpy as np
@@ -116,14 +118,8 @@ def search():
             # Training spike phase
 
             with tf.GradientTape() as tape:
-                # tape.watch(spike_height)
-
-                # error = error_model(fault_gen_model([signal_base, i, cfg.DATA_SPIKE_FAULT_MIN_VALUE]))
                 error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
                 print("While training", error, spike_layer.spike_height)
-                print([var.name for var in tape.watched_variables()])
-                # grads = tape.gradient(error, error_model.trainable_variables)
-
                 grads = tape.gradient(error, spike_layer.spike_height)
                 optimizer.apply_gradients(zip([grads], [spike_layer.spike_height]))
 
@@ -132,13 +128,14 @@ def search():
 
 
 if __name__ == "__main__":
+    
+    os.environ["CUDA_VISIBLE_DEVICES"] = "-1" 
+    
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
     # build the model 
     input_length = cfg.DATA_INPUT_DIMENSION
 
     is_trianing = False
-
 
     signal_in = Input(shape=(input_length,), name='signal_in', dtype=tf.float32)
 
@@ -154,11 +151,6 @@ if __name__ == "__main__":
     signal_out = Dense(100, activation=None, name='signal_out')(dense3)
 
     error_out = tf.keras.losses.MeanSquaredError()(signal_in, signal_out)
-
-    # error_model = tf.keras.Model(inputs=signal_in, outputs=error_out)
-
-    # error_model = tf.keras.Model(inputs=dense1, outputs=error_out)
-    # error_model.summary()
 
     fault_gen_model = tf.keras.Model(inputs=[signal_in, min_spike_height_input, index_input, use_spike], outputs=error_out)
     fault_gen_model.summary()
