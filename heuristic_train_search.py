@@ -13,6 +13,7 @@ import tensorflow as tf
 import datetime
 import numpy as np
 
+from autoencoder import visulization as vis
 from autoencoder import dataset
 from autoencoder import config as cfg
 from autoencoder import summary
@@ -93,14 +94,16 @@ def train():
 
 
 def search():
-    steps = range(10)
+    steps = range(100)
 
     # load pre-trained weights
     weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
     assert os.path.exists(weights_dir), \
         "The trained model not founded"
     weights_path = weights_dir + "/cp.ckpt"
+    
     fault_gen_model.load_weights(weights_path)
+    reconstruction_model.load_weights(weights_path)
 
     # samle a single signal for experiments 
     sample_index = np.random.randint(0, 300)
@@ -119,12 +122,18 @@ def search():
 
             with tf.GradientTape() as tape:
                 error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
-                print("While training", error, spike_layer.spike_height)
+                print("At {} th time step, searching steps {} ".format(i, j), error, spike_layer.spike_height)
                 grads = tape.gradient(error, spike_layer.spike_height)
                 optimizer.apply_gradients(zip([grads], [spike_layer.spike_height]))
 
         error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
-        print("After training", error)
+        
+        if error < cfg.TEST_THRESHOLD:
+            print("<=================> COUNTERS FOUND")
+            counter_example = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+            vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], counter_example[0])
+
+        print("After searching", error)
 
 
 if __name__ == "__main__":
@@ -153,8 +162,11 @@ if __name__ == "__main__":
     error_out = tf.keras.losses.MeanSquaredError()(signal_in, signal_out)
 
     fault_gen_model = tf.keras.Model(inputs=[signal_in, min_spike_height_input, index_input, use_spike], outputs=error_out)
+    
     fault_gen_model.summary()
 
+    reconstruction_model = tf.keras.Model(inputs=[signal_in, min_spike_height_input, index_input, use_spike], outputs=signal_out)
+    
     # define the optimizer
     optimizer = tf.keras.optimizers.Adam()
 
