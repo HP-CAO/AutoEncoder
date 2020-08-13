@@ -27,7 +27,7 @@ TRAIN_BATCH_SIZE = 64
 TRAIN_DATASET_PATH = './data/speed_train.txt' 
 
 # Test options
-TEST_THRESHOLD = 0.00007605
+TEST_THRESHOLD = 0.000007605
 TEST_THRESHOLD_COVERAGE = 0.000007605
 TEST_DATASET_PATH = './data/speed_test.txt'
 TEST_FAULT_DATASET_PATH = './data/speed_fault.txt'

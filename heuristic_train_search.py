@@ -94,7 +94,7 @@ def train():
 
 
 def search():
-    steps = range(100)
+    steps = range(20)
 
     # load pre-trained weights
     weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
@@ -112,12 +112,24 @@ def search():
     sample = tf.cast(sample, dtype=tf.float32)
     sample = tf.reshape(sample, (1, 100))
 
+    remaining_inputs = [0.0 ,0 ,False]
+    sample_reconstructed = reconstruction_model([sample] + remaining_inputs)
+    error_ini = fault_gen_model([sample] + remaining_inputs)
+    print(error_ini)
+    vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, sample[0], sample_reconstructed[0])
+
+
+
     for i in range(input_length):
 
-        # signal_base = np.copy(sample)
+        #signal_base = np.copy(sample)
         signal_base = sample
+        
+        # initializing spike_height 
+        spike_layer.spike_height.assign(0.1)
 
         for j in steps:
+
             # Training spike phase
 
             with tf.GradientTape() as tape:
@@ -126,14 +138,29 @@ def search():
                 grads = tape.gradient(error, spike_layer.spike_height)
                 optimizer.apply_gradients(zip([grads], [spike_layer.spike_height]))
 
+        # error after training 
+
         error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
         
-        if error < cfg.TEST_THRESHOLD:
-            print("<=================> COUNTERS FOUND")
-            counter_example = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
-            vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], counter_example[0])
+        new_signal = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+        error_for_new_signal = fault_gen_model([new_signal] + remaining_inputs)
+       
+        vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], new_signal[0])
+        print("After searching, error:{}=====error_for_new_signal:{} ".format( error, error_for_new_signal))
 
-        print("After searching", error)
+        if error < cfg.TEST_THRESHOLD:
+            print("=================> COUNTERS FOUND")
+            
+            counter_example = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+            counter_error = fault_gen_model([counter_example] + remaining_inputs)
+            print(error, counter_error)
+
+            vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], counter_example[0])
+            
+            counter_example_reconstructed = reconstruction_model([counter_example] + remaining_inputs)
+            vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, counter_example[0], counter_example_reconstructed[0])
+
+
 
 
 if __name__ == "__main__":
