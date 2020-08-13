@@ -138,7 +138,7 @@ def search():
 
         # error after training 
 
-        error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+        error = fault_gen_model([signal_base, signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
 
         new_signal = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
         error_for_new_signal = fault_gen_model([new_signal]+[new_signal] + remaining_inputs)
