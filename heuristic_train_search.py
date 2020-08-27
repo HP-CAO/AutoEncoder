@@ -166,7 +166,7 @@ if __name__ == "__main__":
     # build the model 
     input_length = cfg.DATA_INPUT_DIMENSION
 
-    is_trianing = False
+    is_training = False
 
     signal_in = Input(shape=(input_length,), name='signal_in', dtype=tf.float32)
     true_signal_in = Input(shape=(input_length,), name='true_signal_in', dtype=tf.float32)
@@ -205,7 +205,7 @@ if __name__ == "__main__":
                                                           histogram_freq=100)
     tensorboard_callback.set_model(fault_gen_model)
 
-    if is_trianing:
+    if is_training:
         train()
     else:
         search()
