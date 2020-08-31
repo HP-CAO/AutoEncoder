@@ -12,16 +12,21 @@ import numpy as np
 from autoencoder.net import MLPAutoEncoder
 from autoencoder import dataset
 from autoencoder import config as cfg
+from matplotlib import pyplot as plt
+from matplotlib.collections import PolyCollection, LineCollection
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import colors as mcolors
+
 
 
 def hard_search(sample):
+    all_error_list = [] # collection of error_lists
 
     for i in range(cfg.DATA_INPUT_DIMENSION):
         
-        error_list = []
+        error_list = []  # errors for each step searching on ith time step 
         spike_faults = []
         counter_examples = []
-
         # create spike fault based on selected sample
         # searching steps = 1000
         for j in range(1000):
@@ -49,9 +54,45 @@ def hard_search(sample):
             counters_file = open("{}counter_examples.txt".format(sample_index), "w")
             for row in counter_examples:
                 np.savetxt(counters_file, row)
+        all_error_list.append(error_list)
+        #vis_step_error(error_list)
+    #vis_all_error_3d(all_error_list)
 
-        
+def vis_all_error_3d(all_error_list):
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    all_error_list = np.array(all_error_list)
+    pair = []
+    
+    xs = np.arange(1000)
+    zs = np.arange(100)
 
+    for z in zs:
+        ys = all_error_list[z]
+        pair.append(list(zip(xs, ys)))
+    
+    poly = LineCollection(pair)
+    poly.set_alpha(0.7)
+    ax.add_collection3d(poly, zs=zs, zdir='y')
+
+    ax.set_xlabel('X: searching step')
+    ax.set_xlim3d(0, 1000)
+    ax.set_ylabel('Y: time step')
+    ax.set_ylim3d(0, 100)
+    ax.set_zlabel('Z: reconstruction error')
+    ax.set_zlim3d(0, 0.005)
+    plt.show()
+ 
+
+def vis_step_error(error_list):
+    x = range(len(error_list))
+    y = error_list
+
+    plt.plot(x, y)
+    plt.xlabel('X: searching steps')
+    plt.ylabel('Y: reconstruction error')
+    plt.show()
+    
 if __name__ == "__main__":
 
     # build model & load pretrained weights
@@ -62,11 +103,6 @@ if __name__ == "__main__":
     weights_path = weights_dir +"/cp.ckpt"
     model.load_weights(weights_path)
 
-    # sample a single signal for experiments
-    # sample_index = np.random.randint(0, 300)
-    # sample = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))[sample_index]
-    # sample = dataset.add_noise(sample)
-
     test_dataset = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))
 
     if cfg.DATA_ADD_NOISE:
@@ -74,11 +110,11 @@ if __name__ == "__main__":
 
     sample_index = 1
 
+    # traversing all samples in test dataset
     for sample in test_dataset:        
         hard_search(sample)
         sample_index += 1
         
-    
     print("Searching completed")
 
 

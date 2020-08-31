@@ -10,6 +10,7 @@ import os
 from silence_tensorflow import silence_tensorflow
 
 silence_tensorflow()
+
 import tensorflow as tf
 import datetime
 import numpy as np
@@ -26,7 +27,7 @@ class SpikeLayer(tf.keras.layers.Layer):
     def __init__(self):
         super(SpikeLayer, self).__init__()
 
-        self.spike_height = tf.Variable(initial_value=1.0, trainable=True, shape=())
+        self.spike_height = tf.Variable(initial_value = 1.0, trainable=True, shape=())
 
     def call(self, inputs, **kwargs):
         spike_value = self.spike_height + tf.sign(self.spike_height) * inputs[1]
@@ -60,7 +61,7 @@ def train():
 
         for signals, labels in train_ds:
             with tf.GradientTape() as tape:
-                train_error = fault_gen_model([signals] + [signals] + remaining_inputs)
+                train_error = fault_gen_model([signals] + remaining_inputs)
                 gradients = tape.gradient(train_error, fault_gen_model.trainable_variables)
                 optimizer.apply_gradients(zip(gradients, fault_gen_model.trainable_variables))
             train_loss_ave(train_error)
@@ -70,7 +71,7 @@ def train():
 
         # To evaluate on test dataset during training 
         for test_signals, test_labels in test_ds:
-            test_error = fault_gen_model([test_signals]+[test_signals] + remaining_inputs)
+            test_error = fault_gen_model([test_signals] + remaining_inputs)
             test_loss_ave(test_error)
 
         with test_summary_writer.as_default():
@@ -78,7 +79,7 @@ def train():
 
         # To evaluate on fault dataset during training
         for fault_signals, fault_labels in fault_ds:
-            fault_error = fault_gen_model([fault_signals]+[fault_signals] + remaining_inputs)
+            fault_error = fault_gen_model([fault_signals] + remaining_inputs)
             fault_loss_ave(fault_error)
 
         with fault_summary_writer.as_default():
@@ -95,7 +96,7 @@ def train():
 
 
 def search():
-    steps = range(20)
+    steps = range(100)
 
     # load pre-trained weights
     weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
@@ -113,10 +114,10 @@ def search():
     sample = tf.cast(sample, dtype=tf.float32)
     sample = tf.reshape(sample, (1, 100))
 
+    # reconstruct and  the original signal and visualization
     remaining_inputs = [0.0, 0, False]
     sample_reconstructed = reconstruction_model([sample] + remaining_inputs)
-    error_ini = fault_gen_model([sample]+[sample] + remaining_inputs)
-    print(error_ini)
+    error_ini = fault_gen_model([sample] + remaining_inputs)
     vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, sample[0], sample_reconstructed[0])
 
     for i in range(input_length):
@@ -124,52 +125,51 @@ def search():
         # signal_base = np.copy(sample)
         signal_base = sample
 
-        # initializing spike_height 
-        spike_layer.spike_height.assign(0.1)
+        # initializing spike_height = 0
+        spike_layer.spike_height.assign(0.001)
 
         for j in steps:
-            # Training spike phase
+            # Optimizing spike phase
 
             with tf.GradientTape() as tape:
-                error = fault_gen_model([signal_base, signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+                error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
                 print("At {} th time step, searching steps {} ".format(i, j), error, spike_layer.spike_height)
                 grads = tape.gradient(error, spike_layer.spike_height)
                 optimizer.apply_gradients(zip([grads], [spike_layer.spike_height]))
 
-        # error after training 
-
-        error = fault_gen_model([signal_base, signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
-
-        new_signal = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
-        error_for_new_signal = fault_gen_model([new_signal]+[new_signal] + remaining_inputs)
-
-        vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], new_signal[0])
-        print("After searching, error:{}=====error_for_new_signal:{} ".format(error, error_for_new_signal))
+        # error after optimizing 
+        error = fault_gen_model([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+        #new_signal = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
+        #error_for_new_signal = fault_gen_model([new_signal] + remaining_inputs)
+        #vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], new_signal[0])
+        
+        print("===After searching, error:{}".format(error))
 
         if error < cfg.TEST_THRESHOLD:
+            
             print("=================> COUNTERS FOUND")
-
             counter_example = spike_layer([signal_base, cfg.DATA_SPIKE_FAULT_MIN_VALUE, i, True])
-            counter_error = fault_gen_model([counter_example] + [signal_base] + remaining_inputs)
+            counter_error = fault_gen_model([counter_example] + remaining_inputs)
+            
             print(error, counter_error)
-
+            # Visulizing signal_base and counter_example
             vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, signal_base[0], counter_example[0])
-
+            
+            #visualizing counter_example and its reconstruction
             counter_example_reconstructed = reconstruction_model([counter_example] + remaining_inputs)
             vis.ori_new_signals_plot(cfg.DATA_INPUT_DIMENSION, counter_example[0], counter_example_reconstructed[0])
 
 
 if __name__ == "__main__":
-
-    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    
+    is_training = False
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     # build the model 
     input_length = cfg.DATA_INPUT_DIMENSION
-
-    is_training = False
-
+    
     signal_in = Input(shape=(input_length,), name='signal_in', dtype=tf.float32)
-    true_signal_in = Input(shape=(input_length,), name='true_signal_in', dtype=tf.float32)
+    #true_signal_in = Input(shape=(input_length,), name='true_signal_in', dtype=tf.float32)
 
     index_input = Input(shape=(), name="index_input", dtype=tf.int32)
     min_spike_height_input = Input(shape=(), name="min_spike_height_input", dtype=tf.float32)
@@ -182,9 +182,9 @@ if __name__ == "__main__":
     dense3 = Dense(75, activation='relu', name='dense_3')(dense2)
     signal_out = Dense(100, activation=None, name='signal_out')(dense3)
 
-    error_out = tf.keras.losses.MeanSquaredError()(true_signal_in, signal_out)
+    error_out = tf.keras.losses.MeanSquaredError()(fault_signal, signal_out)
 
-    fault_gen_model = tf.keras.Model(inputs=[signal_in, true_signal_in, min_spike_height_input, index_input, use_spike],
+    fault_gen_model = tf.keras.Model(inputs=[signal_in, min_spike_height_input, index_input, use_spike],
                                      outputs=error_out)
 
     fault_gen_model.summary()
@@ -201,8 +201,8 @@ if __name__ == "__main__":
     # checkpoint_path
     checkpoint_path = './checkpoints/' + current_time + '/cp.ckpt'
 
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="logs/fault",
-                                                          histogram_freq=100)
+    # computing graph
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="logs/fault", histogram_freq=100)
     tensorboard_callback.set_model(fault_gen_model)
 
     if is_training:
