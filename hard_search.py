@@ -43,19 +43,20 @@ def hard_search(sample):
             error_list.append(error)
 
         if error_list[0] == np.min(error_list):
-            print('[Safe]: Searching {} th sample, at {} th time step, No counter examples found'.format(sample_index, i + 1))    
+            print('[Safe]: Searching {} th sample, at {} th time step, No counter examples found'.format(sample_index, i + 1))
+             
         else:
             index = np.where(error_list < error_list[0])
             counter_examples = [spike_faults [n] for n in index]
             print('[Unsafe]: >>>>>>>>>> At {} th time step, Found {} counter examples'.format(i,len(index)))        
-            
+            vis_step_error(error_list)   
             signalbase_file = open("{}signal_base.txt".format(sample_index), "w")
             np.savetxt(signalbase_file, sample)
             counters_file = open("{}counter_examples.txt".format(sample_index), "w")
             for row in counter_examples:
                 np.savetxt(counters_file, row)
         all_error_list.append(error_list)
-        #vis_step_error(error_list)
+        vis_step_error(error_list)
     #vis_all_error_3d(all_error_list)
 
 def vis_all_error_3d(all_error_list):
