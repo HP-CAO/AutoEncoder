@@ -1,11 +1,3 @@
-'''
- # @ Author: Hongi & Mirco
- # @ Create Time: 2020-08-04 10:20:57
- # @ Modified by: Your name
- # @ Modified time: 2020-08-04 10:21:26
- # @ Description: Training and heuristicly searching for counter examples in a smarter way
- '''
-
 import os
 from silence_tensorflow import silence_tensorflow
 
@@ -15,7 +7,7 @@ import tensorflow as tf
 import datetime
 import numpy as np
 
-from autoencoder import visulization as vis
+from autoencoder import visualization as vis
 from autoencoder import dataset
 from autoencoder import config as cfg
 from autoencoder import summary

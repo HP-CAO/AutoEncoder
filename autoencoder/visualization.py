@@ -1,12 +1,6 @@
-'''
- # @ Author: Hongi
- # @ Create Time: 2020-07-07 14:19:48
- # @ Modified by: Your name
- # @ Modified time: 2020-07-07 14:19:54
- # @ Description: Experiments tools
- '''
-
+"""plots for visualization"""
 from matplotlib import pyplot as plt
+
 
 def ori_new_signals_plot(n_dim, signal_base, signal_new):
     

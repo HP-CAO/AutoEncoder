@@ -1,18 +1,13 @@
-'''
- # @ Author: Hongi
- # @ Create Time: 2020-06-28 14:13:45
- # @ Modified by: Your name
- # @ Modified time: 2020-06-28 14:14:07
- # @ Description: Creating summaries for tensorboard
- '''
+"""
+visualizing the training process using tensorboard
+"""
 
 import tensorflow as tf
-import random
-import numpy as np
-import os
+
 import datetime
 
-def build_summary_writer(current_time):
+
+def build_summary_writer():
 
     # Set up summary writers
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")

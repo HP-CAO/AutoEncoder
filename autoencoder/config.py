@@ -1,11 +1,4 @@
-'''
- # @ Author: Hongi
- # @ Create Time: 2020-06-28 14:03:31
- # @ Modified by: Your name
- # @ Modified time: 2020-06-28 15:21:35
- # @ Description: Configuraion file/hyperparameters
- '''
-
+"""Modify configurations here"""
 
 # Weights options
 AUTOENCODER_WEIGHTS_DIR = '20200901-141015'
@@ -27,14 +20,7 @@ TRAIN_BATCH_SIZE = 64
 TRAIN_DATASET_PATH = './data/speed_train.txt' 
 
 # Test options
-TEST_THRESHOLD =  6.579171963494446e-05
-# Test_loss:6.375966677296674e-06, Fault_loss:0.00012520747259259224
-# T1 = 6.375966677296674e-06     found 0
-# T2 = 6.579171963494446e-05     found 1888
-# T3 = 3.6083843156120565e-05    found 1564
-# T4 = 2.122990491670862e-05    found 64
-# T5 = 2.8656874036414592e-05    found 1027
-# T6 = 2.4943389476561606e-05   found521
+TEST_THRESHOLD = 6.579171963494446e-05
 
 TEST_THRESHOLD_COVERAGE = 0.000007605
 TEST_DATASET_PATH = './data/speed_test.txt'
