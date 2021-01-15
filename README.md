@@ -16,9 +16,8 @@ The signals are generated through Matlab Simulink. Only the Vehicle speed signal
 `python demo.py`
 
 ## Generate dataset
-
+`python main_create_dataset.py`
 ## Train
-
 
 
 ## Test
