@@ -17,6 +17,10 @@ Quick signal anomaly detecting and visualizing the results
 
 `python demo.py`
 
+<p align="center">
+    <img width="50%" src="/IMAGES/demopic.png" style="max-width:100%;"></a>
+</p>
+
 ## Generate dataset
 
 `python main_create_dataset.py`
