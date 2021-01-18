@@ -43,7 +43,7 @@ def hard_search(selected_sample, model, sample_index):
             for row in counter_examples:
                 np.savetxt(counters_file, row)
         all_error_list.append(error_list)
-        vis_step_error(error_list)
+        #vis_step_error(error_list)
 
 
 

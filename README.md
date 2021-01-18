@@ -48,4 +48,3 @@ Search for counter examples using heuristic search methods based on SGD optimiza
 ## Parameters
 
 The parameters are listed in `'./autoencoder/config.py'` and they are configurable.
-

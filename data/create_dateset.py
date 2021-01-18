@@ -52,7 +52,8 @@ def create_spike_fault(path):
         v = np.random.random_sample()  # create a random number [0, 1)
         spike_index = np.random.choice(len(signal_set[i]))
         # create spike fault according to minimum height of spike fault
-        signal_set[i][spike_index] = signal_set[i][spike_index] + cfg.DATA_SPIKE_FAULT_MIN_VALUE
+        #signal_set[i][spike_index] = signal_set[i][spike_index] + cfg.DATA_SPIKE_FAULT_MIN_VALUE
+        signal_set[i][spike_index] = signal_set[i][spike_index] * (1 + v)
 
     return signal_set
 
