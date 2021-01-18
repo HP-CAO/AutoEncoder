@@ -3,6 +3,7 @@ creat speed signal dataset train/test
 """
 
 import numpy as np
+from autoencoder import config as cfg
 
 
 def create_dataset():
@@ -37,7 +38,7 @@ def create_dataset():
     return dataset_train, dataset_test
 
 
-def create_spike_fault():
+def create_spike_fault(path):
 
     """
     create spike signal based on normal signal: x(t) = x(t) + vδ(t),
@@ -45,13 +46,14 @@ def create_spike_fault():
     randomly set amplitude v --| x = x(t)*(1+v) where v[0,1]
     """
     
-    signal_set = np.loadtxt("./data/speed_test.txt")
+    signal_set = np.loadtxt(path)
 
     for i in range(len(signal_set)):
         v = np.random.random_sample()  # create a random number [0, 1)
         spike_index = np.random.choice(len(signal_set[i]))
         # create spike fault according to minimum height of spike fault
-        signal_set[i][spike_index] = signal_set[i][spike_index] + 0.045 * (1 + v)
+        signal_set[i][spike_index] = signal_set[i][spike_index] + cfg.DATA_SPIKE_FAULT_MIN_VALUE
+
     return signal_set
 
 

@@ -14,6 +14,7 @@ def plot_graph():
     x = np.arange(len(x_test))
     ax1.plot(x, test_error, 'r', label='Error for normal signals')
     ax1.plot(x, fault_error, 'b', label='Error for abnormal signals')
+
     ax1.set(xlabel='Samples', ylabel=' Mean Squared Error')
     ax1.legend(loc='upper right')
 
@@ -57,11 +58,8 @@ if __name__ == "__main__":
     model = MLPAutoEncoder().autoencoder
 
     # Load pre-trained weights
-    weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
-    assert os.path.exists(weights_dir), \
-        "The trained model not founded"
-    weights_path = weights_dir + "/cp.ckpt"
-    model.load_weights(weights_path)
+    weights_dir = cfg.AUTOENCODER_WEIGHTS_DIR
+    model.load_weights(weights_dir)
 
     # Load test-cases(normal and fault signal)
     x_test = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))
@@ -94,7 +92,6 @@ if __name__ == "__main__":
         distance_normal = np.square(x_test[i] - test_predictions[i])
         error = np.mean(distance_normal)
         covered_nodes_normal = np.where(distance_normal < cfg.TEST_THRESHOLD_COVERAGE)[0]
-        print(error)
         test_error = np.append(test_error, error)
         num_covered_nodes_normal.append(len(covered_nodes_normal))
 

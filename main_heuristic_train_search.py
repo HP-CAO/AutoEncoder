@@ -1,4 +1,4 @@
-"heuristic_search via optimization"
+""""heuristic_search via optimization"""
 
 import os
 from silence_tensorflow import silence_tensorflow
@@ -30,11 +30,12 @@ class SpikeLayer(tf.keras.layers.Layer):
 
 def train():
     # load the training data
+
     train_ds = dataset.load_data(cfg.TRAIN_DATASET_PATH)
     test_ds = dataset.load_data(cfg.TEST_DATASET_PATH)
     fault_ds = dataset.load_data(cfg.TEST_FAULT_DATASET_PATH)
 
-    # build summaru writer for losses curve
+    # build summary writer for losses curve
     train_summary_writer, test_summary_writer, fault_summary_writer = summary.build_summary_writer()
 
     # build losses averaging operator
@@ -91,13 +92,10 @@ def search():
     steps = range(20)
 
     # load pre-trained weights
-    weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
-    assert os.path.exists(weights_dir), \
-        "The trained model not founded"
-    weights_path = weights_dir + "/cp.ckpt"
+    weights_dir = cfg.AUTOENCODER_WEIGHTS_DIR
 
-    fault_gen_model.load_weights(weights_path)
-    reconstruction_model.load_weights(weights_path)
+    fault_gen_model.load_weights(weights_dir)
+    reconstruction_model.load_weights(weights_dir)
 
     # samle a single signal for experiments 
     # sample_index = np.random.randint(0, 300)
@@ -164,7 +162,7 @@ def batch_test():
     """Evaluate the model using F1 score
        F_1 = 2*(Precision * Recall)/(Precision + Recall)"""
     # load model weights
-    weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
+    weights_dir = f"./model/{cfg.AUTOENCODER_WEIGHTS_DIR}"
     assert os.path.exists(weights_dir), \
         "The trained model not founded"
     weights_path = weights_dir + "/cp.ckpt"
@@ -187,7 +185,7 @@ def batch_test():
         test_predictions_error.append(error_test)
 
     for j in x_fault:
-        error_fault = fault_gen_model([tf.reshape(i, (1, 100))] + remaining_inputs)
+        error_fault = fault_gen_model([tf.reshape(j, (1, 100))] + remaining_inputs)
         fault_predictions_error.append(error_fault)
 
     # counting number of TP FN FP TN
@@ -205,7 +203,7 @@ def batch_test():
 
 if __name__ == "__main__":
 
-    is_training = False
+    is_training = True
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     # build the model 
@@ -242,15 +240,13 @@ if __name__ == "__main__":
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
     # checkpoint_path
-    checkpoint_path = './checkpoints/' + current_time + '/cp.ckpt'
+    checkpoint_path = './model/' + current_time + '/'
 
     # computing graph
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="logs/fault", histogram_freq=100)
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir="autoencoder/logs/fault", histogram_freq=100)
     tensorboard_callback.set_model(fault_gen_model)
 
     if is_training:
         train()
     else:
-        # counter_num = search()
-        # print(counter_num)
         batch_test()

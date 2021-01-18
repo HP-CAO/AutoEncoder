@@ -39,11 +39,13 @@ def load_data(data_path):
         os.path.exists(data_path)
     except FileNotFoundError:
         print("Have you ever created train/tes/fault dataset?")
-    
-    data = data_normalization(np.loadtxt(data_path))
-    
+
+    data_set = np.loadtxt(data_path)
+
     if cfg.DATA_ADD_NOISE:
-        data = add_noise(data)
+        data_set = add_noise(data_set)
+
+    data = data_normalization(data_set)
 
     data = tf.cast(data, tf.float32)
 

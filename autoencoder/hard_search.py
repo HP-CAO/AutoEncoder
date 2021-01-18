@@ -2,7 +2,7 @@
 import numpy as np
 
 from autoencoder import config as cfg
-from autoencoder.visualization import vis_step_error, vis_all_error_3d
+from autoencoder.visualization import vis_step_error
 
 
 def hard_search(selected_sample, model, sample_index):
@@ -23,7 +23,7 @@ def hard_search(selected_sample, model, sample_index):
             spike_faults.append(signal)
 
         spike_faults = np.array(spike_faults)
-        predictions = model.predict(spike_faults)
+        predictions = model(spike_faults)
 
         for m in range(len(spike_faults)):
             error = np.mean(np.square(spike_faults[m] - predictions[m]))

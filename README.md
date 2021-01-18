@@ -13,13 +13,39 @@ The signals are generated through Matlab Simulink. Only the Vehicle speed signal
 
 ## Quickstart
 
+Quick signal anomaly detecting and visualizing the results
+
 `python demo.py`
 
 ## Generate dataset
+
 `python main_create_dataset.py`
-## Train
 
+## Train & test
 
-## Test
+To train a legacy mlp-based auto-encoder:
 
-##
+`python main_legacy_train`
+
+To test a legacy mlp-based auto-encoder:
+
+`python main_legacy_test`
+
+To train and test a mlp-based auto-encoder with a trainable spike fault layer.
+
+`python main_heuristic_train_search.py`
+
+## Search for counter examples
+
+Search for counter examples using hard search methods
+
+`python main_hard_search.py`
+
+Search for counter examples using heuristic search methods based on SGD optimization
+
+`python main_heuristic_train_search.py`
+
+## Parameters
+
+The parameters are listed in `'./autoencoder/config.py'` and they are configurable.
+

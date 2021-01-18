@@ -2,7 +2,7 @@ logs/
 .vscode/
 __pycache__/
 checkpoints/
-
+model/
 test.txt
 train.txt
 fault.txt

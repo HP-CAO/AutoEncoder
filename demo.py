@@ -12,27 +12,28 @@ if __name__ == "__main__":
     model = MLPAutoEncoder().autoencoder
 
     # Load pre-trained weights 
-    weights_dir = f"./checkpoints/{cfg.AUTOENCODER_WEIGHTS_DIR}"
-    assert os.path.exists(weights_dir), \
-        "The trained model not founded"
-    weights_path = weights_dir + "/cp.ckpt"
-    model.load_weights(weights_path)
+    weights_dir = cfg.AUTOENCODER_WEIGHTS_DIR
+    model.load_weights(weights_dir)
+    test_dataset = np.loadtxt(cfg.TEST_DATASET_PATH)
+    fault_dataset = np.loadtxt(cfg.TEST_FAULT_DATASET_PATH)
+
+    if cfg.DATA_ADD_NOISE:
+        test_dataset = dataset.add_noise(test_dataset)
+        fault_dataset = dataset.add_noise(fault_dataset)
 
     # Load test-cases(normal and fault signal)
-    x_test = dataset.data_normalization(np.loadtxt(cfg.TEST_DATASET_PATH))
-    x_fault = dataset.data_normalization(np.loadtxt(cfg.TEST_FAULT_DATASET_PATH))
+    x_test = dataset.data_normalization(test_dataset)
+    x_fault = dataset.data_normalization(fault_dataset)
 
     # Randomly sample from dataset
     test_pieces, fault_pieces = dataset.data_pick(x_test, x_fault, cfg.TEST_SAMPLE_NUM)
 
-    # Add gaussain noise
-    if cfg.DATA_ADD_NOISE:
-        test_pieces = dataset.add_noise(test_pieces)
-        fault_pieces = dataset.add_noise(fault_pieces)
-
     # Do inference
-    test_predictions = model.predict(test_pieces)
-    fault_predictions = model.predict(fault_pieces)
+    test_predictions = model.predict(np.array(test_pieces))
+    fault_predictions = model.predict(np.array(fault_pieces))
+
+    com = np.array(test_predictions) == np.array(fault_predictions)
+    result = com.all()
 
     # visualization
     x = np.arange(100)
