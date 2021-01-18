@@ -3,6 +3,7 @@ logs/
 __pycache__/
 checkpoints/
 model/
+.idea/
 test.txt
 train.txt
 fault.txt
