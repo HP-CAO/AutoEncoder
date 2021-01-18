@@ -29,11 +29,11 @@ Quick signal anomaly detecting and visualizing the results
 
 To train a legacy mlp-based auto-encoder:
 
-`python main_legacy_train`
+`python main_legacy_train.py`
 
 To test a legacy mlp-based auto-encoder:
 
-`python main_legacy_test`
+`python main_legacy_test.py`
 
 To train and test a mlp-based auto-encoder with a trainable spike fault layer.
 
